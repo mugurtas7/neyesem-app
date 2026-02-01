@@ -7,6 +7,8 @@ import Register from './screens/public/Register';
 import Login from './screens/public/Login';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from './utils/toast.config';
+import Home from './screens/Home';
+import InfoScreen from './screens/InfoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,18 +18,18 @@ export default function Navigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {/* {isLoggedIn ? (
-                    <Stack.Screen name="Home" component={Home} />
+                {isLoggedIn ? (
+                    <>
+                        <Stack.Screen name="Home" component={Home} />
+                        <Stack.Screen name="InfoScreen" component={InfoScreen} />
+                    </>
                 ) : (
                     <>
                         <Stack.Screen name="Splash" component={Splash} />
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
                     </>
-                )} */}
-                <Stack.Screen name="Splash" component={Splash} />
-                <Stack.Screen name="Login" component={Login} />
-                <Stack.Screen name="Register" component={Register} />
+                )}
             </Stack.Navigator>
             <Toast config={toastConfig} />
         </NavigationContainer>

@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/store/auth";
 import axios from "axios";
 
-axios.defaults.baseURL = "http://localhost:8080";
+axios.defaults.baseURL = "https://superdomineering-sacrificially-rae.ngrok-free.dev";
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
 function putToken() {
@@ -11,7 +11,7 @@ function putToken() {
 export async function get(url: string, params?: any) {
     try {
         putToken();
-        const res = await axios.get("/" + url, { params });
+        const res = await axios.get(url, { params });
 
         return {
             ...res,
@@ -25,14 +25,14 @@ export async function get(url: string, params?: any) {
 export async function post(url: string, data?: any) {
     try {
         putToken();
-        const res = await axios.post("/" + url, data);
+        
+        const res = await axios.post(url, data);
 
         return {
-            ...res,
+            ...res.data,
             status: true
         };
     } catch (error: any) {
-        console.log(error.response);
         return handleError(error);
     }
 }

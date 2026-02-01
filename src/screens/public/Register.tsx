@@ -40,8 +40,6 @@ export default function Register() {
 
         const res: any = await post("/auth/register-fast", data);
 
-        console.log(res);
-
         if (!res.status) {
             showMessage("error", "Kayıt Başarısız", res.message || "Bir hata oluştu, lütfen tekrar deneyin.");
             return;

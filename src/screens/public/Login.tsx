@@ -1,3 +1,6 @@
+import { post } from "@/services/api";
+import { useAuthStore } from "@/store/auth";
+import showMessage from "@/utils/message";
 import { useNavigation } from "@react-navigation/native";
 import AppButton from "components/AppButton";
 import Header from "components/Header";
@@ -10,16 +13,47 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
     const navigation = useNavigation();
-    const [data, setData] = useState({
-        email: "",
-        password: ""
-    });
+    
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const handleInputChange = (value: string, field: string) => {
-        setData({
-            ...data,
-            [field]: value
-        });
+    const login = async () => {
+
+        const data = {
+            email: email.trim(),
+            password: password.trim()
+        };
+        console.log("data: ", data);
+        
+        if (!data.email || !data.password) {
+            showMessage("error", "Eksik Bilgi", "Lütfen tüm alanları doldurun.");
+            return;
+        }
+
+        if (data.email && !/\S+@\S+\.\S+/.test(data.email)) {
+            showMessage("error", "Geçersiz E-Posta", "Lütfen geçerli bir e-posta adresi girin.");
+            return;
+        }
+
+        const res: any = await post("/auth/login", data);
+
+        if (!res.status) {
+            showMessage("error", "Giriş Başarısız", res.message || "Bir hata oluştu, lütfen tekrar deneyin.");
+            return;
+        }
+
+        showMessage("success", "Giriş Başarılı", "Hoş geldiniz! Yönlendiriliyorsunuz...");
+
+        useAuthStore.getState().login(res.data.token, res.data.user);
+
+        if (res.data.user.height === 0 || res.data.user.weight === 0) {
+            navigation.reset({ index: 0, routes: [{ name: 'InfoScreen' as never }] });
+            return;
+        }
+
+        setTimeout(() => {
+            navigation.reset({ index: 0, routes: [{ name: 'Home' as never }] });
+        }, 2000);
     }
 
     return (
@@ -29,9 +63,9 @@ export default function Login() {
                 <Text className="font-bold text-[36px] mt-12 text-center">Giriş Yap</Text>
                 <Text className="text-gray-600 font-regular text-xl mt-2 text-center">Sağlıklı bir yaşam için lezzetli keşifler seni bekliyor.</Text>
                 <View className="flex-1 w-full pt-8">
-                    <InputWithLabel onChange={(val) => handleInputChange(val, "email")} className="mt-5" label="E-Posta Adresiniz" placeholder="E-posta adresiniz..." />
-                    <PasswordInput onChange={(val) => handleInputChange(val, "password")} className="mt-5" label="Şifre" placeholder="Şifre..." />
-                    <AppButton onPress={() => console.log("Test")} text="Giriş Yap" className="mt-8 shadow-xl shadow-primary" rounded="rounded-[20px]" />
+                    <InputWithLabel value={email} onChange={setEmail} className="mt-5" label="E-Posta Adresiniz" placeholder="E-posta adresiniz..." />
+                    <PasswordInput value={password} onChange={setPassword} className="mt-5" label="Şifre" placeholder="Şifre..." />
+                    <AppButton onPress={login} text="Giriş Yap" className="mt-8 shadow-xl shadow-primary" rounded="rounded-[20px]" />
                     <View className="w-full flex-row items-center mt-5">
                         <View className="flex-1 h-px bg-background-dark/10 dark:bg-white/10" />
                         <Text className="px-4 text-charcoal/40 dark:text-white/40 text-md flex-shrink-0">veya</Text>

@@ -18,12 +18,10 @@ export default function Login() {
     const [password, setPassword] = useState("");
 
     const login = async () => {
-
         const data = {
             email: email.trim(),
             password: password.trim()
         };
-        console.log("data: ", data);
         
         if (!data.email || !data.password) {
             showMessage("error", "Eksik Bilgi", "Lütfen tüm alanları doldurun.");
@@ -45,15 +43,6 @@ export default function Login() {
         showMessage("success", "Giriş Başarılı", "Hoş geldiniz! Yönlendiriliyorsunuz...");
 
         useAuthStore.getState().login(res.data.token, res.data.user);
-
-        if (res.data.user.height === 0 || res.data.user.weight === 0) {
-            navigation.reset({ index: 0, routes: [{ name: 'InfoScreen' as never }] });
-            return;
-        }
-
-        setTimeout(() => {
-            navigation.reset({ index: 0, routes: [{ name: 'Home' as never }] });
-        }, 2000);
     }
 
     return (

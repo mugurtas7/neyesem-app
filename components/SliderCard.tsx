@@ -2,13 +2,11 @@ import { View, Text } from "react-native";
 import Slider from "@react-native-community/slider";
 import { useState } from "react";
 
-export default function SliderCard({ defaultValue, title, prefix, min, max, step = 0.1 }: { defaultValue: number, title: string, prefix: string, min: number, max: number, step?: number }) {
-    const [value, setValue] = useState(defaultValue);
-
+export default function SliderCard({ value, setValue, title, prefix, min, max, step = 0.1 }: { value: number, setValue: (val: number) => void, title: string, prefix: string, min: number, max: number, step?: number }) {
     return (
-        <View className="w-full px-6 mt-6">
+        <View className="w-full px-6 py-6 mt-4 bg-white dark:bg-gray-800 rounded-[20px]">
             <View className="flex-row justify-between items-end mb-4">
-                <Text className="text-gray-500 text-base">{title}</Text>
+                <Text className="text-gray-500 text-xl">{title}</Text>
                 <Text className="text-3xl font-semibold">
                     {value.toFixed(1)}{" "}
                     <Text className="text-base text-gray-400">{prefix}</Text>

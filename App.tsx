@@ -12,6 +12,9 @@ import {
   PlusJakartaSans_800ExtraBold,
 } from '@expo-google-fonts/plus-jakarta-sans';
 import Navigation from '@/navigation';
+import { useAuthStore } from '@/store/auth';
+import { useEffect, useState } from 'react';
+import Loading from '@/screens/public/Loading';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -22,13 +25,16 @@ export default function App() {
     PlusJakartaSans_800ExtraBold,
   });
 
-  if (!fontsLoaded) {
-    return null; // veya splash / loader
+  const hydrate = useAuthStore((s) => s.hydrate);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    hydrate().finally(() => setReady(true));
+  }, []);
+
+  if (!fontsLoaded || !ready) {
+    return <Loading />;
   }
 
-  return (
-    <>
-      <Navigation />
-    </>
-  );
+  return <Navigation />;
 }
